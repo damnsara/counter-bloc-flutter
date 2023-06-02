@@ -1,11 +1,21 @@
 import 'package:bloc_practice2/app_bloc.dart';
 import 'package:bloc_practice2/app_events.dart';
+import 'package:bloc_practice2/pages/sign_in/bloc/sign_in_blocs.dart';
+import 'package:bloc_practice2/pages/sign_in/sign_in.dart';
+import 'package:bloc_practice2/pages/welcome/bloc/welcome_blocs.dart';
+import 'package:bloc_practice2/pages/welcome/welcome.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'app_state.dart';
+import 'package:firebase_core/firebase_core.dart';
 
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  await Firebase.initializeApp(
+
+  );
   runApp(const MyApp());
 }
 
@@ -15,18 +25,34 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-        create: (context)=>AppBloc(),
-      child: MaterialApp(
-        debugShowCheckedModeBanner: false,
-        home: MyHomePage(title: 'Flutter Demo Home Page',),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+            create: (context) => WelcomeBloc(),
+        ),
+        BlocProvider(
+            lazy: false,
+            create: (context) => AppBloc()
+        ),
+        BlocProvider(create: (context) => SignInBloc())
+      ],
+      child: ScreenUtilInit(
+        builder: (context, child) =>
+            MaterialApp(
+              debugShowCheckedModeBanner: false,
+              home: Welcome(),
+              routes: {
+                "myHomePage":(context) => const MyHomePage(),
+                "signIn":(context) => const SignIn(),
+              },
+            ),
       ),
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
+  const MyHomePage({super.key});
 
   // This widget is the home page of your application. It is stateful, meaning
   // that it has a State object (defined below) that contains fields that affect
@@ -37,7 +63,6 @@ class MyHomePage extends StatefulWidget {
   // used by the build method of the State. Fields in a Widget subclass are
   // always marked "final".
 
-  final String title;
 
   @override
   State<MyHomePage> createState() => _MyHomePageState();
@@ -56,7 +81,7 @@ class _MyHomePageState extends State<MyHomePage> {
       appBar: AppBar(
         // Here we take the value from the MyHomePage object that was created by
         // the App.build method, and use it to set our appbar title.
-        title: Text(widget.title),
+        title: Text("Flutter Demo Home Page"),
       ),
       body: Center(
         child: BlocBuilder<AppBloc, AppStates>(
@@ -84,14 +109,16 @@ class _MyHomePageState extends State<MyHomePage> {
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
           FloatingActionButton(
+            heroTag: "heroTag1",
             onPressed: () => BlocProvider.of<AppBloc>(context).add(Decrement()),
             tooltip: 'Decrement',
             child: const Icon(Icons.remove),
           ),
           FloatingActionButton(
-          onPressed: () => BlocProvider.of<AppBloc>(context).add(Increment()),
-          tooltip: 'Increment',
-          child: const Icon(Icons.add),
+            heroTag: "heroTag2",
+            onPressed: () => BlocProvider.of<AppBloc>(context).add(Increment()),
+            tooltip: 'Increment',
+            child: const Icon(Icons.add),
           ),
 
         ],

@@ -4,7 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 class AppBloc extends Bloc<AppEvents, AppStates>{
   AppBloc():super(InitStates()){
-
+    print("app bloc");
     on<Increment>((event, emit){
       emit(AppStates(counter: state.counter+1));
     });
