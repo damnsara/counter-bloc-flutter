@@ -1,14 +1,11 @@
-import 'package:bloc_practice2/app_bloc.dart';
-import 'package:bloc_practice2/app_events.dart';
-import 'package:bloc_practice2/pages/sign_in/bloc/sign_in_blocs.dart';
-import 'package:bloc_practice2/pages/sign_in/sign_in.dart';
-import 'package:bloc_practice2/pages/welcome/bloc/welcome_blocs.dart';
-import 'package:bloc_practice2/pages/welcome/welcome.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'app_state.dart';
 import 'package:firebase_core/firebase_core.dart';
+
+import 'common/routes/routes.dart';
+import 'common/values/colors.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -26,32 +23,27 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
-      providers: [
-        BlocProvider(
-            create: (context) => WelcomeBloc(),
-        ),
-        BlocProvider(
-            lazy: false,
-            create: (context) => AppBloc()
-        ),
-        BlocProvider(create: (context) => SignInBloc())
-      ],
+      providers: [...AppPages.allBlocProviders(context)],
       child: ScreenUtilInit(
         builder: (context, child) =>
             MaterialApp(
               debugShowCheckedModeBanner: false,
-              home: Welcome(),
-              routes: {
-                "myHomePage":(context) => const MyHomePage(),
-                "signIn":(context) => const SignIn(),
-              },
+              theme: ThemeData(
+                appBarTheme: const AppBarTheme(
+
+                  iconTheme: IconThemeData(
+                    color: AppColors.primaryText,
+                  ),
+                  elevation: 0, backgroundColor: Colors.white)
+              ),
+              onGenerateRoute: AppPages.generateRouteSettings,
             ),
       ),
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
+/*class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key});
 
   // This widget is the home page of your application. It is stateful, meaning
@@ -126,3 +118,5 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 }
+
+ */
