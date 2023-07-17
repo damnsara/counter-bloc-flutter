@@ -1,3 +1,4 @@
+import 'package:bloc_practice2/common/values/constant.dart';
 import 'package:bloc_practice2/main.dart';
 import 'package:bloc_practice2/pages/welcome/bloc/welcome_events.dart';
 import 'package:dots_indicator/dots_indicator.dart';
@@ -7,6 +8,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../common/values/colors.dart';
+import '../../global.dart';
 import 'bloc/welcome_blocs.dart';
 import 'bloc/welcome_states.dart';
 
@@ -126,6 +128,8 @@ class _WelcomeState extends State<Welcome> {
               );
             }else{
               //Navigator.of(context).push(MaterialPageRoute(builder: (context) => MyHomePage()));
+              Global.storageService.setBool(AppConstants.STORAGE_DEVICE_OPEN_FIRST_TIME, true);
+              print("The value is ${Global.storageService.getDeviceFirstOpen()}");
               Navigator.of(context).pushNamedAndRemoveUntil("/sign_in", (route) => false);
             }
           },

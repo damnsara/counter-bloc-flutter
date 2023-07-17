@@ -1,14 +1,16 @@
 import 'package:bloc_practice2/common/values/colors.dart';
+import 'package:bloc_practice2/pages/home/home_page.dart';
+import 'package:bloc_practice2/pages/profile/profile.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 Widget buildPage(int index){
   List<Widget> _widget = [
-    Center(child: Text("Home")),
+    const HomePage(),
     Center(child: Text("Search")),
     Center(child: Text("Course")),
     Center(child: Text("Chat")),
-    Center(child: Text("Profile")),
+    const ProfilePage()
   ];
 
   return _widget[index];

@@ -1,6 +1,8 @@
 
 import 'package:bloc_practice2/common/routes/names.dart';
+import 'package:bloc_practice2/global.dart';
 import 'package:bloc_practice2/pages/application/application_page.dart';
+import 'package:bloc_practice2/pages/home/bloc/home_page_blocs.dart';
 import 'package:bloc_practice2/pages/register/register.dart';
 import 'package:bloc_practice2/pages/sign_in/sign_in.dart';
 import 'package:bloc_practice2/pages/welcome/bloc/welcome_blocs.dart';
@@ -10,6 +12,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../pages/application/bloc/application_blocs.dart';
+import '../../pages/home/home_page.dart';
 import '../../pages/register/bloc/register_blocs.dart';
 import '../../pages/sign_in/bloc/sign_in_blocs.dart';
 
@@ -36,6 +39,11 @@ class AppPages{
         page: const ApplicationPage(),
         bloc: BlocProvider(create: (_)=>AppBloc(),)
       ),
+      PageEntity(
+          route: AppRoutes.HOME_PAGE,
+          page: const HomePage(),
+          bloc: BlocProvider(create: (_)=>HomePageBlocs(),)
+      ),
     ];
   }
 
@@ -54,6 +62,15 @@ class AppPages{
       // check for route name matching when navigator gets triggered
       var result = routes().where((element) => element.route==settings.name);
       if(result.isNotEmpty){
+
+        bool deviceFirstOpen = Global.storageService.getDeviceFirstOpen();
+        if(result.first.route==AppRoutes.INITIAL&&deviceFirstOpen){
+          bool isLoggedIn = Global.storageService.getIsLoggedIn();
+          if(isLoggedIn){
+            return MaterialPageRoute(builder: (_) => const ApplicationPage(), settings: settings);
+          }
+          return MaterialPageRoute(builder: (_)=>const SignIn(), settings:settings);
+        }
         return MaterialPageRoute(builder: (_) => result.first.page, settings: settings);
       }
     }
